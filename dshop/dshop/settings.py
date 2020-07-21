@@ -21,7 +21,7 @@ AUTH_USER_MODEL = 'main.Client'
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'e9sv6hb8u53vz4rvzqf-ujo4)txxc!m8vwigt69&oz)w6!9gf3'
+SECRET_KEY = os.getenv('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -100,9 +100,9 @@ WSGI_APPLICATION = 'dshop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_shop',
-        'USER' : 'max',
-        'PASSWORD' : '1475963',
+        'NAME': os.getenv('db_name'),
+        'USER' : os.getenv('db_user'),
+        'PASSWORD' : os.getenv('db_pass'),
         'HOST' : '127.0.0.1',
         'PORT' : '5432',
     }
