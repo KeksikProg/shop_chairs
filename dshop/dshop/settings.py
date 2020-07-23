@@ -30,6 +30,24 @@ ALLOWED_HOSTS = []
 
 CART_SESSION_ID = 'cart'
 
+EMAIL_PORT = os.getenv('email_port') # Порт через который будут отправляется письма
+EMAIL_USE_SSL = True # Использовать ли протокол шифрования SSL
+EMAIL_HOST = os.getenv('email_host') # Какой протокол SMTP использовать
+EMAIL_HOST_USER = os.getenv('user_host') # Почта с которой будут отправлятся все письма
+EMAIL_HOST_PASSWORD = os.getenv('user_pass') # Пароль от это почты
+
+
+SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv('vk_key')  # Секретный ключ который берется из приложения вконтакте
+SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv('vk_secret') # тоже ключ и тоже берется из приложения 
+
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email'] # Чтобы дополнительно запросить у пользователя почту 
+
+AUTHENTICATION_BACKENDS = ( # Список классов реализующий аутентефикацию и авторизацию
+    'social_core.backends.vk.VKOAuth2', # Это и ниже для авторизации с помощью вк
+    'django.contrib.auth.backends.ModelBackend',
+
+)
+
 THUMBNAIL_ALIASES = {
     '' : {
         'default' : {
@@ -60,6 +78,7 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'django_cleanup',
     'cart',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -86,6 +105,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'cart.context_processor.cart_total_amount',
+                'social_django.context_processors.backends', # это и одно ниже для регистрации через соц сети
+                'social_django.context_processors.login_redirect',
             ],
         },
     },

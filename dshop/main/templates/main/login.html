@@ -15,6 +15,7 @@
 	<input type="hidden" name="next" value="{{ next }}"> <!--Будет после заполнения формы перенаправлять польхователя на другю страницу-->
 	{% buttons submit='Войти' %}{% endbuttons %} <!--Просто кнопка войти-->
 	<!--<p><a href=" url 'main:email_reset' ">Забыли пароль</a></p>-->
+	<p><a href="{% url 'social:begin' 'vk-oauth2' %}">Войти через ВКонтакте</a></p>
 </form>
 {% endif %}
 {% endblock %}
