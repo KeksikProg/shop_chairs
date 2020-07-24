@@ -9,11 +9,6 @@ class Client(AbstractUser):
 		db_index = True,
 		verbose_name = 'Активация')
 
-	def delete(self, *args, **kwargs):
-		for bb in self.bb_set.all():
-			bb.delete()
-		super().delete(*args, **kwargs)
-
 	class Meta(AbstractUser.Meta):
 		pass
 

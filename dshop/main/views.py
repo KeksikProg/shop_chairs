@@ -1,10 +1,20 @@
 from django.shortcuts import render
-from .models import Rubric, Bb
-from django.contrib.auth.views import LoginView
+from .models import Rubric, Bb, Client
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from .forms import OrderForm, AIFormSet
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.template.loader import get_template
+from django.template import TemplateDoesNotExist
+from django.http import HttpResponse, Http404
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic.edit import UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from .forms import ChangeUserInfoForm
+from django.contrib.auth import logout
+
 
 
 def home(request):
@@ -14,6 +24,14 @@ def home(request):
 
 class BbLogin(LoginView):
 	template_name = 'main/login.html'
+
+
+def other(request, page): # Это будет наша страница со скучными бумагами
+	try:
+		template = get_template('main/' + page + '.html') # Пытаемся получить шаблон
+	except TemplateDoesNotExist: # Если не находит такуб страницу
+		raise Http404 # То ошибка 404 (страница не найдена)
+	return HttpResponse(template.render(request = request))
 
 def add_order(request):
 	if request.user.is_superuser:
@@ -66,5 +84,48 @@ def order_delete(request, pk):
 			return render(request, 'main/order_delete.html', context)
 	else:
 		raise Http404
+
+class ChangeUserInfo(UpdateView, LoginRequiredMixin, SuccessMessageMixin):
+	model = Client
+	template_name = 'main/change_user_info.html'
+	form_class = ChangeUserInfoForm
+	success_url = reverse_lazy('main:home')
+	success_messsage = 'Личные данные пользователя были успешно изменены!'
+
+	def dispatch(self, request, *args, **kwargs):
+		self.user_id = request.user.pk
+		return super().dispatch(request, *args, **kwargs)
+
+	def get_object(self, queryset=None):
+		if not queryset:
+			queryset = self.get_queryset()
+		return get_object_or_404(queryset, pk = self.user_id)
+
+class UserPasswordChange(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):
+	template_name = 'main/change_password.html'
+	success_url = reverse_lazy('main:home')
+	success_messsage = 'Пароль успешно изменен!'
+
+class BbLogout(LogoutView, LoginRequiredMixin):
+	template_name = 'main/logout.html'
+
+class DeleteUserView(LoginRequiredMixin, DeleteView, SuccessMessageMixin):
+	model = Client
+	template_name = 'main/delete_user.html'
+	success_url = reverse_lazy('main:home')
+
+	def dispatch(self, request, *args, **kwargs):
+		self.user_id = request.user.pk
+		return super().dispatch(request, *args, **kwargs)
+
+	def post(self, request, *args, **kwargs):
+		logout(request)
+		messages.add_message(request, messages.SUCCESS, message = 'Пользователь успешно удален!')
+		return super().post(request, *args, **kwargs)
+
+	def get_object(self, queryset=None):
+		if not queryset:
+			queryset = self.get_queryset()
+		return get_object_or_404(queryset, pk = self.user_id)
 
 # Create your views here.
