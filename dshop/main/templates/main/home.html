@@ -42,14 +42,21 @@
 			{% if bb.image %} <!--Если есть фотка--> 
 				{% thumbnail bb.image 'default' as timg %}
 				<img src="{{ timg.url }}" class = 'mr-3'>
+			{% else %}
+				<p></p>
 			{% endif %}
 		</p>
 		<div class = 'media=body'>
 			<a href="#"><!--% url 'main:detail' pk=bb.pk %-->
-				<h3><p>{{ bb.title }}</p></h3> <!--Название-->
+				<h3><p>{{ bb.name }}</p></h3> <!--Название-->
 			</a>
 			<div>{{ bb.content }}</div> <!--Описание-->
 			<p class = 'text-right font-weight-bold'>{{ bb.price }} руб.</p>
+			<form action="{% url 'cart:cart_add' bb.pk %}" method="post">
+			    {{ cart_product_form }}
+			    {% csrf_token %}
+			    <input type="submit" value="Добавить в корзину">
+			</form>
 			{% if user.is_superuser %}
 				<a href="{% url 'main:order_delete' pk=bb.pk %}" class = 'mr-3'>Удалить</a>
 				<a href="{% url 'main:order_change' pk=bb.pk %}">Изменить</a>

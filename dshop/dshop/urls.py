@@ -22,6 +22,7 @@ from django.contrib.staticfiles.views import serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('cart/', include(('cart.urls', 'cart'), namespace = 'cart')),
     path('', include(('main.urls', 'main'), namespace = 'main')),
     path('social/', include('social_django.urls', namespace = 'social')),
 ]

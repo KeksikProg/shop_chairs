@@ -1,0 +1,47 @@
+
+{% extends 'layout/basic.html' %}
+
+{% load thumbnail %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+<h2>Корзина пользователя {{ user.username }}</h2>
+{% for item in cart %}
+	{% with product=item.product %}
+<ul class = 'list-unstyled'> <!--Для всех объявлений в контексте-->
+	<li class = 'media my-5 p-3 border'>
+		<a href="#"> 
+			<!-- % url 'main:detail' rubric_pk=product.rubric.pk  pk=product.pk % -->
+			<p>
+				{% if product.image %} <!--Если есть фотка--> 
+					{% thumbnail product.image 'default' as timg %}
+					<img src="{{ timg.url }}" class = 'mr-3'>
+				{% else %}
+					<p></p>
+				{% endif %}
+			</p>
+		</a>
+		<div class = 'media=body'>
+			<h3><a href="#">{{ product.title }}</a></h3> <!--Название-->
+			<!-- % url 'main:detail' rubric_pk=product.rubric.pk  pk=product.pk % -->
+			<div>{{ product.content }}</div> <!--Описание-->
+			<p class = 'text-right font-weight-bold'>{{ item.quantity }}</p>
+			<p class = 'text-right font-weight-bold'>{{ product.price }} руб.</p> <!--Цена-->
+			<p class = 'text-right font-weight-bold'>{{ item.total_price }}</p>
+			<p><a href="{% url 'cart:cart_remove' product.pk %}">Удалить из корзины</a></p>
+			{% if user.is_superuser %}
+			<p class = 'text-right mt-2'>
+				<a href="{% url 'main:order_change' pk=product.pk %}">Изменить</a>
+				<a href="{% url 'main:order_delete' pk=product.pk %}">Удалить</a>
+			</p>
+			{% endif %}
+		</div>
+	</li>
+		{% endwith %}
+	{% endfor %}
+	<p class = 'text-right font-weight-bold'>{{ cart.get_total_price }}</p>
+</ul>
+{% endblock %}

@@ -33,7 +33,7 @@ class Bb(models.Model):
 		on_delete = models.PROTECT,
 		verbose_name = 'Рубрика')
 	
-	title = models.CharField(
+	name = models.CharField(
 		max_length = 50,
 		verbose_name = 'Название')
 	
@@ -57,7 +57,7 @@ class Bb(models.Model):
 	class Meta:
 		verbose_name = 'Объявление'
 		verbose_name_plural = 'Объявления'
-		ordering = ['title']
+		ordering = ['name']
 
 class AdditionalImage(models.Model):
 	bb = models.ForeignKey(Bb, 

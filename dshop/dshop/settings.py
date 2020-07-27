@@ -23,12 +23,13 @@ AUTH_USER_MODEL = 'main.Client'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('secret_key')
 
+CART_SESSION_ID = 'cart' # Это ключ который мы будем использовать для хранения корзины в сессии пользователя
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-CART_SESSION_ID = 'cart'
 
 EMAIL_PORT = os.getenv('email_port') # Порт через который будут отправляется письма
 EMAIL_USE_SSL = True # Использовать ли протокол шифрования SSL
@@ -74,10 +75,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
+    'cart.apps.CartConfig',
     'bootstrap4',
     'easy_thumbnails',
     'django_cleanup',
-    'cart',
     'social_django',
 ]
 
@@ -100,11 +101,11 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'cart.context_processors.cart',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'cart.context_processor.cart_total_amount',
                 'social_django.context_processors.backends', # это и одно ниже для регистрации через соц сети
                 'social_django.context_processors.login_redirect',
             ],

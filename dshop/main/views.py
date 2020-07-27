@@ -12,14 +12,18 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from .forms import ChangeUserInfoForm
+from .forms import ChangeUserInfoForm, ClientRegForm
 from django.contrib.auth import logout
-
+from django.views.generic import CreateView
+from django.views.generic.base import TemplateView
+from django.contrib.auth.decorators import login_required
+from cart.forms import CartAddForm
 
 
 def home(request):
 	bbs = Bb.objects.all()[:10]
-	context = {'bbs':bbs}
+	cart_product_form = CartAddForm()
+	context = {'bbs':bbs, 'cart_product_form':cart_product_form}
 	return render(request, 'main/home.html', context)
 
 class BbLogin(LoginView):
@@ -128,4 +132,11 @@ class DeleteUserView(LoginRequiredMixin, DeleteView, SuccessMessageMixin):
 			queryset = self.get_queryset()
 		return get_object_or_404(queryset, pk = self.user_id)
 
-# Create your views here.
+class UserRegisterView(CreateView):
+	model = Client
+	template_name = 'main/register.html'
+	form_class = ClientRegForm
+	success_url = reverse_lazy('main:register_done')
+
+class RegisterDoneView(TemplateView): # Это класс для вывода страницы о том что пользователь успешно создан и его нужно потвердить, а суперкласс чисто для вывода шаблона отрендеренного
+	template_name = 'main/register_done.html'
