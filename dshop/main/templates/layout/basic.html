@@ -25,10 +25,18 @@
 
 	<nav class = 'row'>
 		<ul class = 'col nav justify-content-end '>
+			<li class = 'nav-item'>
+					<a href="{% url 'cart:cart_detail' %}" class = 'nav-link'>
+						<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bag" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					  		<path fill-rule="evenodd" d="M14 5H2v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5zM1 4v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4H1z"/>
+					  		<path d="M8 1.5A2.5 2.5 0 0 0 5.5 4h-1a3.5 3.5 0 1 1 7 0h-1A2.5 2.5 0 0 0 8 1.5z"/>
+						</svg>
+					</a>
+					<!-- <a class = 'nav-link' href="{% url 'cart:cart_detail' %}">Корзина</a></li> -->
+				
 			<li class = 'nav-item dropdown'><a href="#" class = 'nav-link dropdown-toggle' role = 'button' aria-haspopup = 'true' aria-expended = 'false'>Профиль</a>
 				{% if user.is_authenticated %}
 					<div class = 'dropdown-menu'> <!--Раскрывающеся меню--> 
-						<a class = 'dropdown-item' href="{% url 'cart:cart_detail' %}">Корзина</a> <!--Вот этот класс в этом и следующих пунктах формирует меню-->
 						<a class = 'dropdown-item' href="{% url 'main:change_info' %}">Изменить личные данные</a>
 						<a class = 'dropdown-item' href="{% url 'main:change_pass' %}">Изменить пароль</a>
 						<div class = 'dropdown-divider'></div> <!--Выступает в виде разделителя между пунктами-->
@@ -60,14 +68,12 @@
 	  	</li>
 		{% for rubric in rubrics %}
 	  		<li class="nav-item">
-	    		<!--<a href=" url 'main:by_rubric' pk=rubric.pk " class = 'nav-link'>                       Жопа не забудь про рубрики
+	    		<a href=" url 'main:by_rubric' pk=rubric.pk " class = 'nav-link'>   
+	    		<!-- url 'main:by_rubric' pk=rubric.pk                    Жопа не забудь про рубрики --> 
 					{{ rubric.name }}
-				</a> -->
+				</a>
 	  		</li>
 	  	{% endfor %}
-	  		<li class = 'nav-item'>
-	  			<!--<a class="nav-link root" href=" url 'main:other' page='about' ">О сайте</a>-->
-	  		</li>
   	</ul>
 
 	{% bootstrap_messages %} <!--С помощью этого будут выводиться всплывающие сообщения-->

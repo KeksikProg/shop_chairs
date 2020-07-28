@@ -3,6 +3,7 @@ from .models import Bb, AdditionalImage, Client
 from django.forms import inlineformset_factory
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
+from .utilities import user_registrated
 
 class OrderForm(forms.ModelForm):
 	class Meta:
@@ -48,6 +49,7 @@ class ClientRegForm(forms.ModelForm):
 		user.set_password(self.cleaned_data['pass1'])
 		if commit:
 			user.save()
+		user_registrated.send(ClientRegForm, instance = user)
 		return user
 
 	class Meta:

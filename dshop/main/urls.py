@@ -1,7 +1,7 @@
 from django.urls import path 
 from .views import home
 from .views import BbLogin, add_order,order_delete,order_change, other, ChangeUserInfo, UserPasswordChange, BbLogout
-from .views import DeleteUserView, UserRegisterView, RegisterDoneView
+from .views import DeleteUserView, UserRegisterView, RegisterDoneView, user_activate
 
 app_name = 'main'
 
@@ -19,6 +19,7 @@ urlpatterns = [
 	path('profile/delete_user', DeleteUserView.as_view(), name = 'delete_user'), # страница удаления пользователя
 	path('profile/register_user', UserRegisterView.as_view(), name = 'user_register'), # страница регистрации
 	path('profile/register_done', RegisterDoneView.as_view(), name = 'register_done'), # страница на которой говорится что для потверждения пользователя надо зайти на почту и потвердить его
+	path('profile/register_user/activate/<str:sign>/', user_activate, name = 'user_activate'),
 	# path('profile/detail', profile, name = 'profile'),
 
 	# Тут у нас все что связано с товарами

@@ -140,3 +140,20 @@ class UserRegisterView(CreateView):
 
 class RegisterDoneView(TemplateView): # Это класс для вывода страницы о том что пользователь успешно создан и его нужно потвердить, а суперкласс чисто для вывода шаблона отрендеренного
 	template_name = 'main/register_done.html'
+
+
+from django.core.signing import Signer
+signer = Signer()
+def user_activate(request, sign):
+	try:
+		username = signer.unsign(sign)
+	except BadSignature:
+		raise Http404
+	user = get_object_or_404(Client, username = username)
+	if user.is_active:
+		template = 'main/user_is_activated.html'
+	else:
+		template = 'main/activation_done.html'
+		user.is_active = True
+		user.save()
+	return render(request, template)

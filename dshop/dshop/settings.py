@@ -38,6 +38,7 @@ EMAIL_HOST_USER = os.getenv('user_host') # Почта с которой буду
 EMAIL_HOST_PASSWORD = os.getenv('user_pass') # Пароль от это почты
 
 
+
 SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv('vk_key')  # Секретный ключ который берется из приложения вконтакте
 SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv('vk_secret') # тоже ключ и тоже берется из приложения 
 
@@ -108,6 +109,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends', # это и одно ниже для регистрации через соц сети
                 'social_django.context_processors.login_redirect',
+                'main.middlewares.rubric_context_processors',
             ],
         },
     },

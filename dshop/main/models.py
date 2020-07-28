@@ -5,7 +5,7 @@ from .utilities import get_timestamp_path
 
 class Client(AbstractUser):
 	is_active = models.BooleanField(
-		default = True,
+		default = False,
 		db_index = True,
 		verbose_name = 'Активация')
 
@@ -93,4 +93,11 @@ class Comment(models.Model):
 		verbose_name = 'Комментарий'
 		verbose_name_plural = 'Комментарии'
 
+
+from django.dispatch import Signal
+from .utilities import send_activation_notification
+user_registrated = Signal(providing_args = ['instance']) # Тут мы из всех сигналов берем определенный по его ключу
+def user_registrated_dispatcher(sender, **kwargs):
+	send_activation_notification(kwargs['instance']) 
+user_registrated.connect(user_registrated_dispatcher)
 # Create your models here.
