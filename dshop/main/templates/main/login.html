@@ -16,8 +16,8 @@
 	{% buttons submit='Войти' %}{% endbuttons %} <!--Просто кнопка войти-->
 	<!--<p><a href=" url 'main:email_reset' ">Забыли пароль</a></p>-->
 	<p><a href="{% url 'social:begin' 'vk-oauth2' %}">Войти через ВКонтакте</a></p>
-	<p><a href="#">Зерегестрироваться</a></p>
-	<p><a href="#">Забыл пароль</a></p>
+	<p><a href="{% url 'main:user_register' %}">Зарегистрироваться</a></p>
+	<p><a href="{% url 'main:password_reset_form' %}">Забыл пароль</a></p>
 </form>
 {% endif %}
 {% endblock %}

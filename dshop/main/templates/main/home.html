@@ -46,13 +46,13 @@
 				<p></p>
 			{% endif %}
 		</p>
-		<div class = 'media=body'>
+		<div class = 'media-body'>
 			<a href="#"><!--% url 'main:detail' pk=bb.pk %-->
 				<h3><p>{{ bb.name }}</p></h3> <!--Название-->
 			</a>
 			<div>{{ bb.content }}</div> <!--Описание-->
-			<p class = 'text-right font-weight-bold'>{{ bb.price }} руб.</p>
-			<form action="{% url 'cart:cart_add' bb.pk %}" class = '' method="post">
+			<p class = 'text-right font-weight-bold'>Цена: {{ bb.price }} руб.</p>
+			<form action="{% url 'cart:cart_add' bb.pk %}" class = 'text-right' method="post">
 			    {{ cart_product_form }}
 			    {% csrf_token %}
 			    <input type="submit" value="Добавить в корзину">

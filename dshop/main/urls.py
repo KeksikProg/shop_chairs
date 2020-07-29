@@ -2,6 +2,7 @@ from django.urls import path
 from .views import home
 from .views import BbLogin, add_order,order_delete,order_change, other, ChangeUserInfo, UserPasswordChange, BbLogout
 from .views import DeleteUserView, UserRegisterView, RegisterDoneView, user_activate
+from .views import ClientPasswordResetView, ClientPasswordResetDone, ClientPasswordConfirmView
 
 app_name = 'main'
 
@@ -21,6 +22,11 @@ urlpatterns = [
 	path('profile/register_done', RegisterDoneView.as_view(), name = 'register_done'), # страница на которой говорится что для потверждения пользователя надо зайти на почту и потвердить его
 	path('profile/register_user/activate/<str:sign>/', user_activate, name = 'user_activate'),
 	# path('profile/detail', profile, name = 'profile'),
+
+	#Тут у нас будут урлы со сбросом пароля, потому что их доваольно много(да 3-4 штуки для ожной задачи многовато)
+	path('profile/password_reset_form', ClientPasswordResetView.as_view(), name = 'password_reset_form'),
+	path('profile/password_reset_done', ClientPasswordResetDone.as_view(), name = 'password_reset_done' ),
+	path('profile/password_reset_confirm/<uidb64>/<token>', ClientPasswordConfirmView.as_view(), name = 'password_reset_confirm'),
 
 	# Тут у нас все что связано с товарами
 	path('order/add', add_order, name = 'add_order'), # странида добавления товара(только админ)

@@ -8,7 +8,11 @@
 {% block title %}Корзина{% endblock %}
 
 {% block content %}
-<h2>Корзина пользователя {{ user.username }}</h2>
+{% if user.is_authenticated %}
+	<h2>Корзина пользователя {{ user.username }}</h2>
+{% else %}
+	<h2>Ваша корзина</h2>
+{% endif %}
 {% for item in cart %}
 	{% with product=item.product %}
 <ul class = 'list-unstyled'> <!--Для всех объявлений в контексте-->
@@ -24,13 +28,13 @@
 				{% endif %}
 			</p>
 		</a>
-		<div class = 'media=body'>
+		<div class = 'media-body'>
 			<h3><a href="#">{{ product.title }}</a></h3> <!--Название-->
 			<!-- % url 'main:detail' rubric_pk=product.rubric.pk  pk=product.pk % -->
 			<div>{{ product.content }}</div> <!--Описание-->
-			<p class = 'text-right font-weight-bold'>{{ item.quantity }}</p>
-			<p class = 'text-right font-weight-bold'>{{ product.price }} руб.</p> <!--Цена-->
-			<p class = 'text-right font-weight-bold'>{{ item.total_price }}</p>
+			<p class = 'text-right'>Кол-во: {{ item.qua }}</p>
+			<p class = 'text-right'>Цена: {{ product.price }} руб.</p> <!--Цена-->
+			<p class = 'text-right'>Общая стоимость товаров: {{ item.total_price }}</p>
 			<p><a href="{% url 'cart:cart_remove' product.pk %}">Удалить из корзины</a></p>
 			{% if user.is_superuser %}
 			<p class = 'text-right mt-2'>
@@ -42,6 +46,6 @@
 	</li>
 		{% endwith %}
 	{% endfor %}
-	<p class = 'text-right font-weight-bold'>{{ cart.get_total_price }}</p>
+	<p class = 'text-right border'>Стоимость всех товаров: <b>{{ cart.get_total_price }}</b></p>
 </ul>
 {% endblock %}

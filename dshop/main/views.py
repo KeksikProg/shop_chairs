@@ -18,25 +18,10 @@ from django.views.generic import CreateView
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from cart.forms import CartAddForm
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView
+from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView
 
-
-def home(request):
-	bbs = Bb.objects.all()[:10]
-	cart_product_form = CartAddForm()
-	context = {'bbs':bbs, 'cart_product_form':cart_product_form}
-	return render(request, 'main/home.html', context)
-
-class BbLogin(LoginView):
-	template_name = 'main/login.html'
-
-
-def other(request, page): # Это будет наша страница со скучными бумагами
-	try:
-		template = get_template('main/' + page + '.html') # Пытаемся получить шаблон
-	except TemplateDoesNotExist: # Если не находит такуб страницу
-		raise Http404 # То ошибка 404 (страница не найдена)
-	return HttpResponse(template.render(request = request))
-
+'''Тут будут вьюхи связанные с товаром'''
 def add_order(request):
 	if request.user.is_superuser:
 		if request.method == 'POST':
@@ -89,6 +74,31 @@ def order_delete(request, pk):
 	else:
 		raise Http404
 
+
+
+'''Тут свьюхи домашняя и с дополнительной инфой'''
+
+def home(request):
+	bbs = Bb.objects.all()[:10]
+	cart_product_form = CartAddForm()
+	context = {'bbs':bbs, 'cart_product_form':cart_product_form}
+	return render(request, 'main/home.html', context)
+
+
+def other(request, page): # Это будет наша страница со скучными бумагами
+	try:
+		template = get_template('main/' + page + '.html') # Пытаемся получить шаблон
+	except TemplateDoesNotExist: # Если не находит такуб страницу
+		raise Http404 # То ошибка 404 (страница не найдена)
+	return HttpResponse(template.render(request = request))
+
+
+
+'''Тут вьюхи с входом, выходом и удалением пользователя'''
+
+class BbLogin(LoginView):
+	template_name = 'main/login.html'
+
 class ChangeUserInfo(UpdateView, LoginRequiredMixin, SuccessMessageMixin):
 	model = Client
 	template_name = 'main/change_user_info.html'
@@ -132,11 +142,15 @@ class DeleteUserView(LoginRequiredMixin, DeleteView, SuccessMessageMixin):
 			queryset = self.get_queryset()
 		return get_object_or_404(queryset, pk = self.user_id)
 
+
+'''Тут вьюхи с регистрацией и активацией'''
+
 class UserRegisterView(CreateView):
 	model = Client
 	template_name = 'main/register.html'
 	form_class = ClientRegForm
 	success_url = reverse_lazy('main:register_done')
+
 
 class RegisterDoneView(TemplateView): # Это класс для вывода страницы о том что пользователь успешно создан и его нужно потвердить, а суперкласс чисто для вывода шаблона отрендеренного
 	template_name = 'main/register_done.html'
@@ -157,3 +171,22 @@ def user_activate(request, sign):
 		user.is_active = True
 		user.save()
 	return render(request, template)
+
+
+
+'''Тут будут вьюхи с сбросом пароля'''
+
+class ClientPasswordResetView(PasswordResetView):
+	template_name = 'main/password_reset.html'
+	subject_template_name = 'email/password_reset_subj.txt'
+	email_template_name = 'email/password_reset_body.html'
+	success_url = reverse_lazy('main:password_reset_done')
+
+
+class ClientPasswordResetDone(PasswordResetDoneView):
+	template_name = 'main/password_reset_done.html'
+
+class ClientPasswordConfirmView(PasswordResetConfirmView):
+	template_name = 'main/password_reset_confirm.html'
+	success_url = reverse_lazy('main:login')
+

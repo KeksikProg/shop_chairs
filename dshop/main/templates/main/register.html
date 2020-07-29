@@ -10,5 +10,6 @@
 	{% csrf_token %}
 	{% bootstrap_form form layout='horizontal' %}
 	{% buttons submit='Зарегистрироваться' %}{% endbuttons %}
+	<p><p><a href="{% url 'social:begin' 'vk-oauth2' %}">Зарегистрироваться через ВКонтакте</a></p></p>
 </form>
 {% endblock %}
