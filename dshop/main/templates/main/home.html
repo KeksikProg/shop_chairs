@@ -41,13 +41,13 @@
 		<p>
 			{% if bb.image %} <!--Если есть фотка--> 
 				{% thumbnail bb.image 'default' as timg %}
-				<img src="{{ timg.url }}" class = 'mr-3'>
+				<a href="{% url 'main:detail' pk=bb.pk %}"><img src="{{ timg.url }}" class = 'mr-3'></a>
 			{% else %}
 				<p></p>
 			{% endif %}
 		</p>
 		<div class = 'media-body'>
-			<a href="#"><!--% url 'main:detail' pk=bb.pk %-->
+			<a href="{% url 'main:detail' pk=bb.pk %}"><!--% url 'main:detail' pk=bb.pk %-->
 				<h3><p>{{ bb.name }}</p></h3> <!--Название-->
 			</a>
 			<div>{{ bb.content }}</div> <!--Описание-->

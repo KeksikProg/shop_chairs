@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Rubric, Bb, Client
+from .models import Rubric, Bb, Client, Comment
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from .forms import OrderForm, AIFormSet
 from django.shortcuts import get_object_or_404
@@ -20,6 +20,8 @@ from django.contrib.auth.decorators import login_required
 from cart.forms import CartAddForm
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView
 from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView
+from .forms import CommentForm
+from django.urls import reverse
 
 '''Тут будут вьюхи связанные с товаром'''
 def add_order(request):
@@ -63,16 +65,58 @@ def order_change(request, pk):
 
 def order_delete(request, pk):
 	if request.user.is_superuser:
-		post = get_object_or_404(Bb, pk = pk)
+		product = get_object_or_404(Bb, pk = pk)
 		if request.method == 'POST':
-			post.delete()
+			product.delete()
 			messages.add_message(request, messages.SUCCESS, message = 'Товар удален')
 			return redirect('main:home')
 		else:
-			context = {'post' : post}
+			context = {'product' : product}
 			return render(request, 'main/order_delete.html', context)
 	else:
 		raise Http404
+
+
+@login_required(login_url='/profile/login/')
+def order_detail(request, pk):
+	bb = Bb.objects.get(pk = pk)
+	ai = bb.additionalimage_set.all()
+	comment = Comment.objects.filter(bb = pk)
+	initial = {'bb':bb.pk}
+	if request.user.is_authenticated:
+		initial['author'] = request.user.username
+		form_class = CommentForm
+	form = form_class(initial=initial)
+	if request.method == 'POST':
+		c_form = form_class(request.POST)
+		if c_form.is_valid():
+			response = c_form.save()
+			response.author = request.user.username
+			response.save()
+			messages.add_message(request, messages.SUCCESS, message = 'Комментарий успешно добавлен')
+			return redirect('main:home')
+		else:
+			form = c_form
+			messages.add_message(request, messages.WARNING, message = 'Комментарий не был добавлен')	
+	context = {'bb' : bb, 'ai' : ai, 'comment':comment, 'form':form}
+	return render(request, 'main/detail.html', context)
+
+def comment_delete(request, comments):
+	comment = get_object_or_404(Comment, pk = comments)
+	if request.user.is_superuser or request.user.username == comment.author:
+		if request.method == 'POST':
+			comment.delete()
+			messages.add_message(request, messages.SUCCESS, message = 'Коммент удален!')
+			return redirect('main:home')
+		else:
+			context = {'comment' : comment}
+			return render(request, 'main/comment_delete.html', context)
+	else:
+		raise Http404
+
+
+
+
 
 
 
@@ -189,4 +233,8 @@ class ClientPasswordResetDone(PasswordResetDoneView):
 class ClientPasswordConfirmView(PasswordResetConfirmView):
 	template_name = 'main/password_reset_confirm.html'
 	success_url = reverse_lazy('main:login')
+
+
+
+
 

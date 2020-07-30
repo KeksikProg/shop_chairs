@@ -1,5 +1,5 @@
 from django import forms
-from .models import Bb, AdditionalImage, Client
+from .models import Bb, AdditionalImage, Client, Comment
 from django.forms import inlineformset_factory
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
@@ -55,3 +55,9 @@ class ClientRegForm(forms.ModelForm):
 	class Meta:
 		model = Client
 		fields = ('username', 'email', 'pass1', 'pass2', 'first_name', 'last_name')
+
+class CommentForm(forms.ModelForm):
+	class Meta:
+		model = Comment
+		fields = '__all__'
+		widgets = {'bb':forms.HiddenInput, 'author':forms.HiddenInput}
