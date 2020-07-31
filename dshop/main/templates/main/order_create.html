@@ -1,0 +1,26 @@
+{% extends 'layout/basic.html' %}
+
+{% load bootstrap4 %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<h2>Заказ</h2>
+<div class="order-info">
+        <h3>Ваш заказ</h3>
+        <ul>
+            {% for item in cart %}
+                <li>
+                    {{ item.qua }}x {{ item.product.name }}
+                    <span>${{ item.total_price }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <p>Общая суммая: {{ cart.get_total_price }}</p>
+    </div>
+    <form action="" method="post" class="order-form">
+        {% csrf_token %}
+        {% bootstrap_form form layout='horizontal' %}
+        {% buttons submit='Оформить' %}{% endbuttons %}
+    </form>
+{% endblock %}

@@ -38,8 +38,8 @@
 			<p><a href="{% url 'cart:cart_remove' product.pk %}">Удалить из корзины</a></p>
 			{% if user.is_superuser %}
 			<p class = 'text-right mt-2'>
-				<a href="{% url 'main:order_change' pk=product.pk %}">Изменить</a>
-				<a href="{% url 'main:order_delete' pk=product.pk %}">Удалить</a>
+				<a href="{% url 'main:product_change' pk=product.pk %}">Изменить</a>
+				<a href="{% url 'main:product_delete' pk=product.pk %}">Удалить</a>
 			</p>
 			{% endif %}
 		</div>
@@ -47,5 +47,6 @@
 		{% endwith %}
 	{% endfor %}
 	<p class = 'text-right border'>Стоимость всех товаров: <b>{{ cart.get_total_price }}</b></p>
+	<a href="{% url 'main:order_create' %}" class = 'button'>Заказать</a>
 </ul>
 {% endblock %}

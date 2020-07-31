@@ -1,0 +1,9 @@
+{% extends "layout/basic.html" %}
+
+{% block title %}Спасибо{% endblock %}
+
+{% block content %}
+    <h2>Спасибо за заказ</h2>
+    <p>Ваш заказ был принят и в скором времени будет отправлен. Номер вашего заказа
+        <strong>{{ order.pk }}</strong>.</p>
+{% endblock %}

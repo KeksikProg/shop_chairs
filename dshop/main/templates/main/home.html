@@ -58,8 +58,8 @@
 			    <input type="submit" value="Добавить в корзину">
 			</form>
 			{% if user.is_superuser %}
-				<a href="{% url 'main:order_delete' pk=bb.pk %}" class = 'mr-3'>Удалить</a>
-				<a href="{% url 'main:order_change' pk=bb.pk %}">Изменить</a>
+				<a href="{% url 'main:product_delete' pk=bb.pk %}" class = 'mr-3'>Удалить</a>
+				<a href="{% url 'main:product_change' pk=bb.pk %}">Изменить</a>
 			{% endif %}
 		</div>
 	</li>

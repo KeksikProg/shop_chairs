@@ -32,11 +32,16 @@
 <!-- Комментарии -->
 
 <h4 class = 'mt-5'>Новый комментарий</h4>
-<form method="post">
-	{% csrf_token %}
-	{% bootstrap_form form layout='horizontal' %}
-	{% buttons submit='Добавить комментарий' %}{% endbuttons %}
-</form>
+{% if user.is_authenticated %}
+	<form method="post">
+		{% csrf_token %}
+		{% bootstrap_form form layout='horizontal' %}
+		{% buttons submit='Добавить комментарий' %}{% endbuttons %}
+	</form>
+{% else %}
+	<p>Чтобы оставлять комментарии на товарах нужно зайти в аккаунт</p>
+	<p><a href="{% url 'main:login' %}">Войти</a></p>
+{% endif %}
 {% if comment %}
 <div class = 'mt-5'>
 	{% for comm in comment %}

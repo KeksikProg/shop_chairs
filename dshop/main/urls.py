@@ -1,9 +1,9 @@
 from django.urls import path 
 from .views import home
-from .views import BbLogin, add_order,order_delete,order_change, other, ChangeUserInfo, UserPasswordChange, BbLogout
+from .views import BbLogin, add_product,product_delete,product_change, other, ChangeUserInfo, UserPasswordChange, BbLogout
 from .views import DeleteUserView, UserRegisterView, RegisterDoneView, user_activate
 from .views import ClientPasswordResetView, ClientPasswordResetDone, ClientPasswordConfirmView
-from .views import order_detail, comment_delete
+from .views import product_detail, comment_delete, order_create
 
 app_name = 'main'
 
@@ -30,11 +30,14 @@ urlpatterns = [
 	path('profile/password_reset_confirm/<uidb64>/<token>', ClientPasswordConfirmView.as_view(), name = 'password_reset_confirm'),
 
 	# Тут у нас все что связано с товарами
-	path('order/add', add_order, name = 'add_order'), # странида добавления товара(только админ)
-	path('order/delete/<int:pk>', order_delete, name = 'order_delete'), # страница удаления товара(только админ)
-	path('order/change/<int:pk>', order_change, name = 'order_change'), # страница изменения товара (только админ)
-	path('order/detail/<int:pk>', order_detail, name = 'detail'),
-	path('order/detail/comment_delete/<int:comments>', comment_delete, name = 'comment_delete')
-	# path('order/detail', detail, name = 'detal'),
+	path('product/add', add_product, name = 'add_product'), # странида добавления товара(только админ)
+	path('product/delete/<int:pk>', product_delete, name = 'product_delete'), # страница удаления товара(только админ)
+	path('product/change/<int:pk>', product_change, name = 'product_change'), # страница изменения товара (только админ)
+	path('product/detail/<int:pk>', product_detail, name = 'detail'),
+	path('product/detail/comment_delete/<int:comments>', comment_delete, name = 'comment_delete'),
+	# path('product/detail', detail, name = 'detal'),
+
+	# Заказы
+	path('order/create', order_create, name = 'order_create'),
 
 ]

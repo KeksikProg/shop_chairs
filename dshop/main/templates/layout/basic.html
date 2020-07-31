@@ -54,7 +54,7 @@
 			{% if user.is_superuser %}
 				<li class = 'nav-item dropdown'><a href="#" class = 'nav-link dropdown-toggle' role = 'button' aria-haspopup = 'true' aria-expended = 'false'>Админка</a>
 					<div class = 'dropdown-menu'> <!--Раскрывающеся меню--> 
-						<a class = 'dropdown-item' href="{% url 'main:add_order' %}">Добавить товар</a> <!--Вот этот класс в этом и следующих пунктах формирует меню-->
+						<a class = 'dropdown-item' href="{% url 'main:add_product' %}">Добавить товар</a> <!--Вот этот класс в этом и следующих пунктах формирует меню-->
 					</div>
 				</li>
 			{% endif %}

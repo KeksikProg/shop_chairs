@@ -3,7 +3,9 @@ from django.contrib.auth.models import AbstractUser
 from .utilities import get_timestamp_path
 
 
+
 class Client(AbstractUser):
+	'''Модель для пользователей (тут добавили только поле is_active чтобы сделать регистрацию с активацией'''
 	is_active = models.BooleanField(
 		default = False,
 		db_index = True,
@@ -13,6 +15,7 @@ class Client(AbstractUser):
 		pass
 
 class Rubric(models.Model):
+	'''Модель для рубрик'''
 	name = models.CharField(
 		max_length = 30,
 		db_index = True,
@@ -28,6 +31,7 @@ class Rubric(models.Model):
 		return self.name
 
 class Bb(models.Model):
+	'''Модель для просто товаров'''
 	rubric = models.ForeignKey(
 		Rubric,
 		on_delete = models.PROTECT,
@@ -60,6 +64,7 @@ class Bb(models.Model):
 		ordering = ['name']
 
 class AdditionalImage(models.Model):
+	'''Модель для дополнительных изображений(товары)'''
 	bb = models.ForeignKey(Bb, 
 		on_delete = models.CASCADE,
 		verbose_name = 'Объявление')
@@ -73,6 +78,7 @@ class AdditionalImage(models.Model):
 		verbose_name_plural = 'Дополнительные изображения'
 
 class Comment(models.Model):
+	'''модель для комментариев'''
 	bb = models.ForeignKey(Bb,
 		on_delete = models.CASCADE,
 		verbose_name = 'Объявление')
@@ -92,6 +98,60 @@ class Comment(models.Model):
 	class Meta:
 		verbose_name = 'Комментарий'
 		verbose_name_plural = 'Комментарии'
+
+class Order(models.Model):
+	'''ТУт модель для создания заказов'''
+	first_name = models.CharField( # Имя
+		max_length=50)
+	last_name = models.CharField( # фамилия
+    	max_length=50)
+	email = models.EmailField() #  электронная почта
+	address = models.CharField( # адрес
+    	max_length=250)
+	postal_code = models.CharField( # код региона
+    	max_length=20)
+	city = models.CharField( # город
+    	max_length=100)
+	created = models.DateTimeField( #  когда заказ создан
+    	auto_now_add=True)
+	updated = models.DateTimeField( # когда заказ обновлялся
+    	auto_now=True)
+	paid = models.BooleanField( # был ли заказ уже оплачен
+    	default=False)
+
+	class Meta:
+		ordering = ['-created']
+		verbose_name = 'Заказ'
+		verbose_name_plural = 'Заказы'
+
+
+	def __str__(self):
+		return f'Order {self.pk}'
+
+	def get_total_cost(self):
+		return sum(item.get_cost() for item in self.items.all())
+
+class OrderItem(models.Model):
+	order = models.ForeignKey(Order,
+		related_name = 'items',
+		on_delete = models.CASCADE)
+	product = models.ForeignKey(Bb,
+		related_name = 'order_item',
+		on_delete = models.CASCADE)
+	price = models.FloatField(
+		default = 0,
+		verbose_name = 'Цена')
+	qua = models.PositiveIntegerField(default = 1)
+
+
+	def __str__(self):
+		return f'{self.pk}'
+
+	def get_cost(self):
+		return self.price * self.qua
+
+
+
 
 
 from django.dispatch import Signal

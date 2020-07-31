@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Rubric, Bb, Client, Comment
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
-from .forms import OrderForm, AIFormSet
+from .forms import ProductForm, AIFormSet
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -22,48 +22,51 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView
 from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView
 from .forms import CommentForm
 from django.urls import reverse
+from .models import OrderItem
+from .forms import OrderCreateForm
+from cart.cart import Cart
 
 '''Тут будут вьюхи связанные с товаром'''
-def add_order(request):
+def add_product(request):
 	if request.user.is_superuser:
 		if request.method == 'POST':
-			form = OrderForm(request.POST, request.FILES)
+			form = ProductForm(request.POST, request.FILES)
 			if form.is_valid():
-				order = form.save()
-				formset = AIFormSet(request.POST, request.FILES, instance = order)
+				product = form.save()
+				formset = AIFormSet(request.POST, request.FILES, instance = product)
 				if formset.is_valid():
 					formset.save()
 					messages.add_message(request, messages.SUCCESS, message = 'Товар успешно добавлен')
 					return redirect ('main:home')
 		else:
-			form = OrderForm(initial = {})
+			form = ProductForm(initial = {})
 			formset = AIFormSet()
 		context = {'form' : form, 'formset' : formset}
-		return render (request, 'main/add_order.html', context)
+		return render (request, 'main/add_product.html', context)
 	else:
 		raise Http404
 
-def order_change(request, pk):
+def product_change(request, pk):
 	if request.user.is_superuser:
-		order = get_object_or_404(Bb, pk = pk)
+		product = get_object_or_404(Bb, pk = pk)
 		if request.method == 'POST':
-			form = OrderForm(request.POST, request.FILES, instance = order)
+			form = ProductForm(request.POST, request.FILES, instance = product)
 			if form.is_valid():
-				order = form.save()
-				formset = AIFormSet(request.POST, request.FILES, instance = order)
+				product = form.save()
+				formset = AIFormSet(request.POST, request.FILES, instance = product)
 				if formset.is_valid():
 					formset.save()
 					messages.add_message(request, messages.SUCCESS, message = 'Товар изменен')
 					return redirect('main:home')
 		else:
-			form = OrderForm(instance = order)
-			formset = AIFormSet(instance = order)
+			form = ProductForm(instance = product)
+			formset = AIFormSet(instance = product)
 		context = {'form' : form, 'formset' : formset}
-		return render(request, 'main/order_change.html', context)
+		return render(request, 'main/product_change.html', context)
 	else:
 		raise Http404
 
-def order_delete(request, pk):
+def product_delete(request, pk):
 	if request.user.is_superuser:
 		product = get_object_or_404(Bb, pk = pk)
 		if request.method == 'POST':
@@ -72,20 +75,20 @@ def order_delete(request, pk):
 			return redirect('main:home')
 		else:
 			context = {'product' : product}
-			return render(request, 'main/order_delete.html', context)
+			return render(request, 'main/product_delete.html', context)
 	else:
 		raise Http404
 
 
-@login_required(login_url='/profile/login/')
-def order_detail(request, pk):
+# @login_required(login_url='/profile/login/')
+def product_detail(request, pk):
 	bb = Bb.objects.get(pk = pk)
 	ai = bb.additionalimage_set.all()
 	comment = Comment.objects.filter(bb = pk)
 	initial = {'bb':bb.pk}
 	if request.user.is_authenticated:
 		initial['author'] = request.user.username
-		form_class = CommentForm
+	form_class = CommentForm
 	form = form_class(initial=initial)
 	if request.method == 'POST':
 		c_form = form_class(request.POST)
@@ -233,6 +236,26 @@ class ClientPasswordResetDone(PasswordResetDoneView):
 class ClientPasswordConfirmView(PasswordResetConfirmView):
 	template_name = 'main/password_reset_confirm.html'
 	success_url = reverse_lazy('main:login')
+
+
+'''Заказы'''
+def order_create(request):
+	cart = Cart(request)
+	if request.method == 'POST':
+		form = OrderCreateForm(request.POST)
+		if form.is_valid():
+			order = form.save()
+			for item in cart:
+				OrderItem.objects.create(
+					order = order,
+					product = item['product'],
+					price = item['price'],
+					qua = item['qua'])
+			cart.clear()
+			return render(request, 'main/order_created.html', {'order':order})
+	else:
+		form = OrderCreateForm
+	return render(request, 'main/order_create.html', {'cart':cart,'form':form})
 
 
 

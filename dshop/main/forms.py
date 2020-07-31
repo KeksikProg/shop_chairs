@@ -4,8 +4,9 @@ from django.forms import inlineformset_factory
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from .utilities import user_registrated
+from .models import Order
 
-class OrderForm(forms.ModelForm):
+class ProductForm(forms.ModelForm):
 	class Meta:
 		model = Bb
 		fields = '__all__'
@@ -61,3 +62,8 @@ class CommentForm(forms.ModelForm):
 		model = Comment
 		fields = '__all__'
 		widgets = {'bb':forms.HiddenInput, 'author':forms.HiddenInput}
+
+class OrderCreateForm(forms.ModelForm):
+	class Meta:
+		model = Order
+		fields = ['first_name', 'last_name', 'email', 'address', 'postal_code', 'city'] 
