@@ -68,7 +68,7 @@
 	  	</li>
 		{% for rubric in rubrics %}
 	  		<li class="nav-item">
-	    		<a href=" url 'main:by_rubric' pk=rubric.pk " class = 'nav-link'>   
+	    		<a href="{% url 'main:by_rubric' pk=rubric.pk %}" class = 'nav-link'>   
 	    		<!-- url 'main:by_rubric' pk=rubric.pk                    Жопа не забудь про рубрики --> 
 					{{ rubric.name }}
 				</a>

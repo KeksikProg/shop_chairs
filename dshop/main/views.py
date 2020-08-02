@@ -23,8 +23,10 @@ from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCom
 from .forms import CommentForm
 from django.urls import reverse
 from .models import OrderItem
-from .forms import OrderCreateForm
+from .forms import OrderCreateForm, SearchForm
 from cart.cart import Cart
+from django.db.models import Q
+from django.core.paginator import Paginator
 
 '''Тут будут вьюхи связанные с товаром'''
 def add_product(request):
@@ -79,6 +81,25 @@ def product_delete(request, pk):
 	else:
 		raise Http404
 
+def by_rubric(request, pk):
+	rubric = get_object_or_404(Rubric, pk = pk)
+	bbs = Bb.objects.filter(rubric = rubric)
+	cart_product_form = CartAddForm()
+	if 'keyword' in request.GET:
+		keyword = request.GET['keyword']
+		q = Q(name__icontains = keyword) | Q(content__icontains = keyword)
+		bbs = bbs.filter(q)
+	else:
+		keyword = ''
+	form = SearchForm(initial = {'keyword':keyword})
+	paginator = Paginator(bbs, 2)
+	if 'page' in request.GET:
+		page_num = request.GET['page']
+	else:
+		page_num = 1
+	page = paginator.get_page(page_num)
+	context = {'rubric':rubric, 'page':page, 'bbs':page.object_list, 'form':form, 'cart_product_form':cart_product_form}
+	return render(request, 'main/by_rubric.html', context)
 
 # @login_required(login_url='/profile/login/')
 def product_detail(request, pk):
@@ -126,9 +147,22 @@ def comment_delete(request, comments):
 '''Тут свьюхи домашняя и с дополнительной инфой'''
 
 def home(request):
-	bbs = Bb.objects.all()[:10]
+	bbs = Bb.objects.all()
 	cart_product_form = CartAddForm()
-	context = {'bbs':bbs, 'cart_product_form':cart_product_form}
+	if 'keyword' in request.GET:
+		keyword = request.GET['keyword']
+		q = Q(name__icontains = keyword) | Q(content__icontains = keyword)
+		bbs = bbs.filter(q)
+	else:
+		keyword = ''
+	form = SearchForm(initial = {'keyword':keyword})
+	paginator = Paginator(bbs, 2)
+	if 'page' in request.GET:
+		page_num = request.GET['page']
+	else:
+		page_num = 1
+	page = paginator.get_page(page_num)
+	context = {'page':page, 'bbs':page.object_list, 'form':form, 'cart_product_form':cart_product_form}
 	return render(request, 'main/home.html', context)
 
 

@@ -3,7 +3,7 @@ from .views import home
 from .views import BbLogin, add_product,product_delete,product_change, other, ChangeUserInfo, UserPasswordChange, BbLogout
 from .views import DeleteUserView, UserRegisterView, RegisterDoneView, user_activate
 from .views import ClientPasswordResetView, ClientPasswordResetDone, ClientPasswordConfirmView
-from .views import product_detail, comment_delete, order_create
+from .views import product_detail, comment_delete, order_create, by_rubric
 
 app_name = 'main'
 
@@ -35,6 +35,7 @@ urlpatterns = [
 	path('product/change/<int:pk>', product_change, name = 'product_change'), # страница изменения товара (только админ)
 	path('product/detail/<int:pk>', product_detail, name = 'detail'),
 	path('product/detail/comment_delete/<int:comments>', comment_delete, name = 'comment_delete'),
+	path('product/rubric/<int:pk>', by_rubric, name = 'by_rubric'),
 	# path('product/detail', detail, name = 'detal'),
 
 	# Заказы

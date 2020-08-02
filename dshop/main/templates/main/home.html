@@ -1,6 +1,7 @@
 {% extends 'layout/basic.html' %}
 {% load static %}
 {% load thumbnail %}
+{% load bootstrap4 %}
 
 {% block title %}кекс{% endblock %}
 
@@ -34,6 +35,10 @@
 {% endblock %}
 
 {% block content %}
+<form class = 'col-md-auto form-inline'> <!--form-inline укажет все элементы управления сделать в одну строку-->
+			{% bootstrap_form form show_label=False %}
+			{% bootstrap_button content='Найти' button_type='submit' %}
+</form>
 {% if bbs %}
 <ul class = 'list-unstyled'>
 	{% for bb in bbs %} <!--Для всех объявлений в контексте-->
@@ -65,5 +70,6 @@
 	</li>
 	{% endfor %}
 </ul>
+{% bootstrap_pagination page url=keyword %}
 {% endif %}
 {% endblock %}
